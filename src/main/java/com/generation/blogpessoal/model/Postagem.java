@@ -1,11 +1,13 @@
 package com.generation.blogpessoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name ="tb_postagens")
@@ -19,8 +21,17 @@ public class Postagem {
     @Size(min = 5, max = 100 , message = "O atributo titulo, no minimo 5 e máximo 100!")
     private String titulo;
     @NotBlank
-    @Size(min = 10, max = 100)
+    @Size(min = 10, max = 1000, message = "O Atributo texto deve conter no mínimo 10 e no máximo 100 caracteres")
     private String texto;
+
+    @UpdateTimestamp
+    private LocalDateTime data;
+
+    @ManyToOne
+    @JsonIgnoreProperties("postagens")
+    private Tema tema;
+
+
 
     public Long getId() {
         return id;
@@ -54,7 +65,6 @@ public class Postagem {
         this.data = data;
     }
 
-    @UpdateTimestamp
-   private LocalDateTime data;
+
 
 }

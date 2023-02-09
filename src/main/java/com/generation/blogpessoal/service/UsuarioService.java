@@ -1,6 +1,7 @@
 package com.generation.blogpessoal.service;
 
 import com.generation.blogpessoal.model.Usuario;
+import com.generation.blogpessoal.model.UsuarioLogin;
 import com.generation.blogpessoal.repository.UsuarioRepository;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,30 @@ public class UsuarioService {
 
             return Optional.ofNullable(usuarioRepository.save(usuario));
 
+        }
+
+        return Optional.empty();
+
+    }
+
+
+    public Optional<UsuarioLogin> autenticarUsuario(Optional<UsuarioLogin> usuarioLogin) {
+
+        Optional<Usuario> usuario = usuarioRepository.findByUsuario(usuarioLogin.get().getUsuario());
+
+        if (usuario.isPresent()) {
+
+            if (compararSenhas(usuarioLogin.get().getSenha(), usuario.get().getSenha())) {
+
+                usuarioLogin.get().setId(usuario.get().getId());
+                usuarioLogin.get().setNome(usuario.get().getNome());
+                usuarioLogin.get().setFoto(usuario.get().getFoto());
+                usuarioLogin.get().setToken(gerarBasicToken(usuarioLogin.get().getUsuario(),        usuarioLogin.get().getSenha()));
+                usuarioLogin.get().setSenha(usuario.get().getSenha());
+
+                return usuarioLogin;
+
+            }
         }
 
         return Optional.empty();

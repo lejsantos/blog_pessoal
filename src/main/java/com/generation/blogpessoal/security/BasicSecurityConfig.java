@@ -15,13 +15,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class BasicSecurityConfig {
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
+    
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -29,20 +32,21 @@ public class BasicSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
-                .cors();
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().csrf().disable()
+            .cors();
 
         http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/usuarios/logar").permitAll()
-                        .requestMatchers("/usuarios/cadastrar").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .anyRequest().authenticated())
-                .httpBasic();
+            .authorizeHttpRequests((auth) -> auth
+                .antMatchers("/usuarios/logar").permitAll()
+                .antMatchers("/usuarios/cadastrar").permitAll()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .anyRequest().authenticated())
+            .httpBasic();
 
         return http.build();
 
     }
+
 }
